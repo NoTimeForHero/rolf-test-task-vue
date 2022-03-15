@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { TypeQuestion, ValidateErrors } from '@/types';
 import TextField from '@/components/simple/TextField.vue';
 import questionsModule from '@/store/questions';
@@ -44,7 +44,7 @@ const question = reactive<TypeQuestion>({
 // const errors = computed<TypeQuestion>(() => ValidateErrors(question).errors as TypeQuestion);
 
 // Валидация при нажатии кнопки отправить
-const errors = reactive<TypeQuestion>({
+const errors = ref<TypeQuestion>({
   name: '',
   email: '',
   carBrand: '',
@@ -57,9 +57,7 @@ const canSubmit = computed(() => Object.values(question).every((field) => (field
 const onSubmit = () => {
   // Валидация при нажатии на кнопку
   const validation = ValidateErrors(question);
-  // TODO: Исправить этот костыль с (object as any)[index]
-  // eslint-disable-next-line no-return-assign
-  Object.entries(validation.errors as TypeQuestion).forEach(([key, error]) => (errors as any)[key] = error);
+  errors.value = validation.errors as TypeQuestion;
   if (!validation.isValid) return;
 
   questionsModule.actions.addNewQuestion(question);
