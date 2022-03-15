@@ -1,11 +1,12 @@
 <template>
   <div class="root">
     <div class="header">Задать вопрос</div>
+    <div class="alert alert-danger" v-if="questionsModule.state.errors">{{questionsModule.state.errors}}</div>
     <div class="row">
       <TextField class="col-6 pb-2" placeholder="Имя" v-model="question.name" :error="errors.name" />
       <TextField class="col-6 pb-2" placeholder="EMail" v-model="question.email" :error="errors.email" />
-      <TextField class="col-6 pb-2" placeholder="Авто" v-model="question.carBrand" :error="errors.carBrand" />
-      <TextField class="col-6 pb-2" placeholder="Username" v-model="question.carModel" :error="errors.carModel" />
+      <TextField class="col-6 pb-2" placeholder="Марка авто" v-model="question.carBrand" :error="errors.carBrand" />
+      <TextField class="col-6 pb-2" placeholder="Модель авто" v-model="question.carModel" :error="errors.carModel" />
       <div class="input-group col-12 pb-2">
         <div class="w-100"><textarea class="form-control" v-model="question.text" /></div>
         <div class="text-danger">{{errors.text}}</div>
@@ -15,14 +16,14 @@
       <div class="spinner-border" role="status" v-if="questionsModule.state.isLoading">
         <span class="sr-only">Loading...</span>
       </div>
-      <button class="btn btn-primary" :disabled="!canSubmit" @click="onSubmit">Отправить</button>
+      <button v-else class="btn btn-primary" :disabled="!canSubmit" @click="onSubmit">Отправить</button>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, reactive } from 'vue';
-import { QuestionValidation, TypeQuestion, ValidateErrors } from '@/types';
+import { TypeQuestion, ValidateErrors } from '@/types';
 import TextField from '@/components/simple/TextField.vue';
 import questionsModule from '@/store/questions';
 
@@ -32,6 +33,11 @@ const question = reactive<TypeQuestion>({
   carBrand: '',
   carModel: '',
   text: '',
+  // name: 'Пример',
+  // email: 'mail@example.org',
+  // carBrand: 'Example',
+  // carModel: 'Example',
+  // text: 'Text',
 });
 
 // Валидация при вводе любой строки
@@ -51,11 +57,12 @@ const canSubmit = computed(() => Object.values(question).every((field) => (field
 const onSubmit = () => {
   // Валидация при нажатии на кнопку
   const validation = ValidateErrors(question);
+  // TODO: Исправить этот костыль с (object as any)[index]
   // eslint-disable-next-line no-return-assign
   Object.entries(validation.errors as TypeQuestion).forEach(([key, error]) => (errors as any)[key] = error);
   if (!validation.isValid) return;
 
-  console.warn('isValid!');
+  questionsModule.actions.addNewQuestion(question);
 };
 
 </script>
