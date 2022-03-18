@@ -28,16 +28,16 @@ import TextField from '@/components/simple/TextField.vue';
 import questionsModule from '@/store/questions';
 
 const question = reactive<TypeQuestion>({
-  name: '',
-  email: '',
-  carBrand: '',
-  carModel: '',
-  text: '',
-  // name: 'Пример',
-  // email: 'mail@example.org',
-  // carBrand: 'Example',
-  // carModel: 'Example',
-  // text: 'Text',
+  // name: '',
+  // email: '',
+  // carBrand: '',
+  // carModel: '',
+  // text: '',
+  name: 'Пример',
+  email: 'mail@example.org',
+  carBrand: 'Example',
+  carModel: 'Example',
+  text: 'Text',
 });
 
 // Валидация при вводе любой строки
