@@ -35,3 +35,15 @@ export const ValidateErrors = (question: TypeQuestion) : { isValid: boolean, err
     return { isValid: false, errors: { ...fields, ...fieldsWithError } };
   }
 };
+
+export interface TResultSuccess<T> {
+  success: true,
+  payload: T
+}
+export interface TResultError {
+  success: false,
+  error: any,
+}
+export type TResult<T> = TResultError | TResultSuccess<T>;
+
+export interface TRef<T> { ref: T }
